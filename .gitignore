@@ -1,0 +1,6 @@
+TODO
+.venv
+data/*
+!data/.gitkeep
+__pycache__/
+outputs/*

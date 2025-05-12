@@ -1,0 +1,12 @@
+TRAIN_DIR_IMAGES: 'data/train_images'
+TRAIN_DIR_LABELS: 'data/train_xmls'
+VALID_DIR_IMAGES: 'data/valid_images'
+VALID_DIR_LABELS: 'data/valid_xmls'
+
+CLASSES: [
+    '__background__',
+    'acne',
+]
+
+# Quantidade de classes que o modelo deve detectar
+NC: 2
