@@ -1,14 +1,10 @@
-from utils.general import create_model
-from utils.general import Averager, SaveBestModel, save_loss_plot, save_mAP, set_training_dir
-from utils.logging import coco_log, set_log
-from torch_utils.engine import (train_one_epoch, evaluate)
-from datasets import (create_train_dataset, create_valid_dataset, create_train_loader, create_valid_loader)
-
 import torch
 import yaml
 import numpy as np
 
-# torch.multiprocessing.set_sharing_strategy('file_system')
+from torch_utils.engine import (train_one_epoch, evaluate)
+from dataset import (create_train_dataset, create_valid_dataset, create_train_loader, create_valid_loader)
+from torch_utils.utils import Averager, SaveBestModel, coco_log, create_model, set_log
 
 np.random.seed(42)
 
@@ -26,7 +22,7 @@ def main():
     NUM_CLASSES = data_configs['NC']
 
     # Cria diretório de saída para salvar os resultados
-    OUT_DIR = set_training_dir('')
+    OUT_DIR = '/results/train'
 
     # Cores para cada classe (RGB normalizado)
     COLORS = np.random.uniform(0, 1, size=(len(CLASSES), 3))

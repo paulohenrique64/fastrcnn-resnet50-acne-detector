@@ -1,15 +1,13 @@
 import math
 import sys
 import time
-
 import torch
 import torchvision
+
 from torch_utils import utils
 from torch_utils.coco_eval import CocoEvaluator
 from torch_utils.utils import MetricLogger, reduce_dict
 from torch_utils.coco_utils import get_coco_api_from_dataset
-from utils.general import save_validation_results
-
 
 def train_one_epoch(
     model, 
