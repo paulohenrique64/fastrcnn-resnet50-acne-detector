@@ -15,7 +15,7 @@ def train_one_epoch(
     data_loader, 
     device, 
     epoch, 
-    train_loss_hist,
+    train_loss_hist, # monitorar o loss médio por época
     print_freq, 
     scaler=None,
 ):
@@ -102,9 +102,6 @@ def evaluate(
     model, 
     data_loader, 
     device, 
-    out_dir=None,
-    classes=None,
-    colors=None
 ):
     n_threads = torch.get_num_threads()
     torch.set_num_threads(1)
