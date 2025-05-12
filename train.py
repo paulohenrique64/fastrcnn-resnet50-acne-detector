@@ -4,7 +4,7 @@ import numpy as np
 
 from torch_utils.engine import (train_one_epoch, evaluate)
 from dataset import (create_train_dataset, create_valid_dataset, create_train_loader, create_valid_loader)
-from torch_utils.utils import Averager, SaveBestModel, coco_log, create_model, set_log
+from torch_utils.utils import Averager, SaveBestModel, coco_log, create_model, save_loss_plot, save_mAP, set_log
 
 np.random.seed(42)
 
@@ -127,6 +127,18 @@ def main():
 
         # Salva logs de validação
         coco_log(OUT_DIR, stats)
+
+        # Armazena perdas e métricas
+        save_loss_plot(
+            OUT_DIR, 
+            train_loss_list_epoch,
+            'epochs',
+            'train loss',
+            save_name='train_loss_epoch' 
+        )
+
+        # Armazena perdas e métricas
+        save_mAP(OUT_DIR, val_map_05, val_map)
 
         # Salva melhor modelo (baseado no mAP médio)
         save_best_model.update(

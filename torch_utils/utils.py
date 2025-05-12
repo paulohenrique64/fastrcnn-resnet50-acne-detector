@@ -380,3 +380,23 @@ def coco_log(log_dir, stats):
             out_str = f"{key} = {stats[i]}"
             logger.debug(out_str) 
         logger.debug('\n'*2) 
+
+# Função para guardar o gráfico de loss de cada época
+def save_loss_plot(OUT_DIR, train_loss_list, x_label='iterations',y_label='train loss',save_name='train_loss_iter'):
+    figure_1 = plt.figure(figsize=(10, 7), num=1, clear=True)
+    train_ax = figure_1.add_subplot()
+    train_ax.plot(train_loss_list, color='tab:blue')
+    train_ax.set_xlabel(x_label)
+    train_ax.set_ylabel(y_label)
+    figure_1.savefig(f"{OUT_DIR}/{save_name}.png")
+
+# Salva os mAP@0.5 e mAP@0.5:0.95 de cada época
+def save_mAP(OUT_DIR, map_05, map):
+    figure = plt.figure(figsize=(10, 7), num=1, clear=True)
+    ax = figure.add_subplot()
+    ax.plot(map_05, color='tab:orange', linestyle='-', label='mAP@0.5')
+    ax.plot(map, color='tab:red', linestyle='-', label='mAP@0.5:0.95')
+    ax.set_xlabel('Epochs')
+    ax.set_ylabel('mAP')
+    ax.legend()
+    figure.savefig(f"{OUT_DIR}/map.png")
