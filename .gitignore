@@ -1,6 +1,11 @@
 TODO
 .venv
 data/*
+results/inference/*
+results/training/*
 !data/.gitkeep
+!results/training/.gitkeep
+!results/inference/.gitkeep
 __pycache__/
 outputs/*
+clean.sh

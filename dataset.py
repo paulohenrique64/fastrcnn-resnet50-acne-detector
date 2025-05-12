@@ -90,11 +90,11 @@ class CustomDataset(Dataset):
         # Converte rótulos para tensor
         labels = torch.as_tensor(labels, dtype=torch.int64)
 
-        return image_resized, boxes, labels, area, iscrowd
+        return image_resized, boxes, labels, area, iscrowd, image_path
 
     
     def __getitem__(self, index):
-        image, boxes, labels, area, iscrowd = self.load_image_and_labels(index)
+        image, boxes, labels, area, iscrowd, _ = self.load_image_and_labels(index)
 
         target = {
             "boxes": boxes,

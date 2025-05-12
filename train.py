@@ -9,6 +9,13 @@ from torch_utils.utils import Averager, SaveBestModel, coco_log, create_model, s
 np.random.seed(42)
 
 def main():
+    # Hiperparâmetros
+    NUM_WORKERS = 4
+    NUM_EPOCHS = 50
+    BATCH_SIZE = 2
+    IMAGE_WIDTH = 640
+    IMAGE_HEIGHT = 640
+
     # Carrega as configurações do dataset a partir de um arquivo YAML
     with open('acne.yaml') as file:
         data_configs = yaml.safe_load(file)
@@ -22,20 +29,13 @@ def main():
     NUM_CLASSES = data_configs['NC']
 
     # Cria diretório de saída para salvar os resultados
-    OUT_DIR = '/results/train'
+    OUT_DIR = './results/training'
 
     # Cores para cada classe (RGB normalizado)
     COLORS = np.random.uniform(0, 1, size=(len(CLASSES), 3))
 
     # Define o dispositivo de computação (GPU se disponível)
     DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-
-    # Hiperparâmetros
-    NUM_WORKERS = 4
-    NUM_EPOCHS = 50
-    BATCH_SIZE = 2
-    IMAGE_WIDTH = 640
-    IMAGE_HEIGHT = 640
 
     # Inicia o arquivo de log
     set_log(OUT_DIR)
@@ -110,9 +110,6 @@ def main():
             model, 
             valid_loader, 
             device=DEVICE,
-            out_dir=OUT_DIR,
-            classes=CLASSES,
-            colors=COLORS
         )
 
         # Armazena perdas e métricas
