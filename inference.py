@@ -14,7 +14,7 @@ def main():
     TEST_IMAGES_DIR = './data/test_images'
     TEST_XMLS_DIR = './data/test_xmls'
     WEIGHTS_PATH = './results/training_1/best_model.pth'
-    THRESHOLD = 0.6
+    THRESHOLD = 0.60
 
     # Cria diretório de saída para salvar os resultados
     OUT_DIR_BASE_PATH = './results/'

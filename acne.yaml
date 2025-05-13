@@ -4,23 +4,23 @@ VALID_DIR_IMAGES: 'data/valid_images'
 VALID_DIR_LABELS: 'data/valid_xmls'
 
 # Dataset 1-classe-105-images-dataset-pascal-voc
-CLASSES: [
-    '__background__',
-    'acne',
-]
-
-# Quantidade de classes que o modelo deve detectar
-NC: 2
-
-# Dataset 5-classes-260-images-dataset-pascal-voc
 # CLASSES: [
 #     '__background__',
-#     'dark_spot',
-#     'flat_red_area',
-#     'red_bump',
-#     'white_bump',
-#     'deep_bump',
+#     'acne',
 # ]
+
+# # Quantidade de classes que o modelo deve detectar
+# NC: 2
+
+# Dataset 5-classes-260-images-dataset-pascal-voc
+CLASSES: [
+    '__background__',
+    'dark_spot',
+    'flat_red_area',
+    'red_bump',
+    'white_bump',
+    'deep_bump',
+]
 
 # Quantidade de classes que o modelo deve detectar
 NC: 6
