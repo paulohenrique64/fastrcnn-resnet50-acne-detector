@@ -1,6 +1,7 @@
 import torch
 import yaml
 import numpy as np
+import os
 
 from torch_utils.engine import (train_one_epoch, evaluate)
 from dataset import (create_train_dataset, create_valid_dataset, create_train_loader, create_valid_loader)
@@ -11,7 +12,7 @@ np.random.seed(42)
 def main():
     # Hiperparâmetros
     NUM_WORKERS = 4
-    NUM_EPOCHS = 50
+    NUM_EPOCHS = 130
     BATCH_SIZE = 2
     IMAGE_WIDTH = 640
     IMAGE_HEIGHT = 640
@@ -29,10 +30,18 @@ def main():
     NUM_CLASSES = data_configs['NC']
 
     # Cria diretório de saída para salvar os resultados
-    OUT_DIR = './results/training'
+    OUT_DIR_BASE_PATH = './results/'
+    last_out_dir_number = 0
 
-    # Cores para cada classe (RGB normalizado)
-    COLORS = np.random.uniform(0, 1, size=(len(CLASSES), 3))
+    for file_name in os.listdir(OUT_DIR_BASE_PATH):
+        if file_name.startswith('training_'):
+            file_name_number = int(file_name.split('_')[-1])
+
+            if file_name_number > last_out_dir_number:
+                last_out_dir_number = file_name_number
+
+    OUT_DIR = os.path.join(OUT_DIR_BASE_PATH, f'training_{last_out_dir_number+1}')
+    os.makedirs(OUT_DIR, exist_ok=True)
 
     # Define o dispositivo de computação (GPU se disponível)
     DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
@@ -83,6 +92,7 @@ def main():
         if p.requires_grad:
             params.append(p)
 
+    # Otimizador escolhido
     optimizer = torch.optim.SGD(params, lr=0.001, momentum=0.9, nesterov=True)
 
     # Inicializa controle de melhor modelo

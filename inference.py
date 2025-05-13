@@ -13,9 +13,22 @@ np.random.seed(42)
 def main():
     TEST_IMAGES_DIR = './data/test_images'
     TEST_XMLS_DIR = './data/test_xmls'
-    OUTPUT_DIR = './results/inference'
-    WEIGHTS_PATH = './results/training/best_model.pth'
+    WEIGHTS_PATH = './results/training_1/best_model.pth'
     THRESHOLD = 0.6
+
+    # Cria diretório de saída para salvar os resultados
+    OUT_DIR_BASE_PATH = './results/'
+    last_out_dir_number = 0
+
+    for file_name in os.listdir(OUT_DIR_BASE_PATH):
+        if file_name.startswith('inference_'):
+            file_name_number = int(file_name.split('_')[-1])
+
+            if file_name_number > last_out_dir_number:
+                last_out_dir_number = file_name_number
+
+    OUT_DIR = os.path.join(OUT_DIR_BASE_PATH, f'inference_{last_out_dir_number+1}')
+    os.makedirs(OUT_DIR, exist_ok=True)
 
     with open('acne.yaml') as file:
         data_configs = yaml.safe_load(file)
@@ -71,16 +84,18 @@ def main():
                 'scores': outputs[0]['scores']
             }
 
-            image = draw_annotations(image_normalized, images_width, images_heigth, detections, classes, colors, inference=True, threshold=THRESHOLD)
+            image = draw_annotations(image_rgb, images_width, images_heigth, detections, classes, colors, inference=True, threshold=THRESHOLD)
     
-        cv2.imwrite(f'{OUTPUT_DIR}/{image_name}.jpg', image)
+        cv2.imwrite(f'{OUT_DIR}/{image_name}.jpg', image)
         print(f'Finished inference for image {image_name}.jpg')
 
     # montar as anotações criadas manualmente na imagem para comparação
     dataset = create_valid_dataset(TEST_IMAGES_DIR, TEST_XMLS_DIR, 640, 640, classes)
 
     for i in range(dataset.__len__()):
+        # image está normalizada
         image, boxes, labels, _, _, image_path = dataset.load_image_and_labels(i)
+        image = (image * 255).clip(0, 255).astype(np.uint8)
 
         image_name = image_path.split('/')[-1]
 
@@ -90,7 +105,7 @@ def main():
         }
 
         image = draw_annotations(image, images_width, images_heigth, detections, classes, colors)
-        cv2.imwrite(f'{OUTPUT_DIR}/EXPECTED_{image_name}', image)
+        cv2.imwrite(f'{OUT_DIR}/EXPECTED_{image_name}', image)
 
     cv2.destroyAllWindows()
 
@@ -100,7 +115,7 @@ def draw_annotations(image, image_height, image_width, detections, classes, colo
     import cv2
 
     # garante que a imagem está no formato esperado para o OpenCV
-    image = np.ascontiguousarray(image, dtype=np.float32)
+    image = np.ascontiguousarray(image)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     image = cv2.resize(image, (image_height, image_width)) 
 
@@ -123,7 +138,7 @@ def draw_annotations(image, image_height, image_width, detections, classes, colo
 
     # escala proporcional ao tamanho da imagem (usado para fonte e espessura da caixa)
     base_dim = min(image_height, image_width)
-    thickness = max(1, int(base_dim * 0.002))       
+    thickness = max(1, int(base_dim * 0.002))      
     font_scale = base_dim * 0.0010               
 
     for i in range(len(labels)):
@@ -139,7 +154,7 @@ def draw_annotations(image, image_height, image_width, detections, classes, colo
         y_max = int(box[3] * y_scale)
 
         class_name = classes[label]
-        color = colors[label]
+        color = tuple(int(c) for c in colors[label])
 
         # desenha a box
         cv2.rectangle(
@@ -157,12 +172,12 @@ def draw_annotations(image, image_height, image_width, detections, classes, colo
             (x_min, y_min - 5),
             cv2.FONT_HERSHEY_SIMPLEX,
             font_scale,
-            (255, 0, 255),
+            color,
             thickness=max(1, thickness),
             lineType=cv2.LINE_AA
         )
 
-    return (image * 255).clip(0, 255).astype(np.uint8)
+    return image
 
 
 if __name__ == '__main__':
